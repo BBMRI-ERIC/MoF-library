@@ -1166,6 +1166,11 @@ class BlazeClient:
         """Just as name says.DELETES EVERYTHING!!!"""
 
         biobank_fhir_id = self.get_fhir_id("Organization", biobank_id)
+        biobank_json = self.get_fhir_resource_as_json("Organization", biobank_fhir_id)
+        juristic_person_reference = get_nested_value(biobank_json or {}, ["partOf", "reference"])
+        juristic_person_fhir_id = None
+        if juristic_person_reference is not None:
+            juristic_person_fhir_id = parse_reference_id(juristic_person_reference)
         deleted_biobank = self.delete_biobank(biobank_fhir_id)
         if not deleted_biobank:
             return False
@@ -1188,6 +1193,25 @@ class BlazeClient:
                 break
             next_link = self._blaze_url + url[url_after_fhir + len("/fhir"):]
             response = self._session.get(url=next_link)
+        if juristic_person_fhir_id is not None:
+            self._delete_juristic_person_if_unused(juristic_person_fhir_id)
+        return True
+
+    def _delete_juristic_person_if_unused(self, juristic_person_fhir_id: str) -> bool:
+        """Delete a juristic person Organization, unless other organizations still belong to it.
+        :param juristic_person_fhir_id: FHIR ID of the juristic person resource
+        :return: True if the resource was deleted, False otherwise"""
+        if not self.is_resource_present_in_blaze("Organization", juristic_person_fhir_id):
+            return False
+        response = self._session.get(f"{self._blaze_url}/Organization",
+                                     params={
+                                         "partof": juristic_person_fhir_id
+                                     })
+        self.__raise_for_status_extract_diagnostics_message(response)
+        if response.json().get("entry") is not None:
+            return False
+        delete_response = self._session.delete(f"{self._blaze_url}/Organization/{juristic_person_fhir_id}")
+        self.__raise_for_status_extract_diagnostics_message(delete_response)
         return True
 
     @staticmethod

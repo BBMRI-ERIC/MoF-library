@@ -309,7 +309,7 @@ class Biobank:
                 extensions.append(
                     create_codeable_concept_extension(
                         FHIRConfig.get_extension_url("biobank", "organisational_capabilities"),
-                        FHIRConfig.get_code_system_url("biobank", "ogranisational_capabilities"),
+                        FHIRConfig.get_code_system_url("biobank", "organisational_capabilities"),
                         capability))
         if self.bioprocessing_and_analysis_capabilities is not None:
             for capability in self.bioprocessing_and_analysis_capabilities:

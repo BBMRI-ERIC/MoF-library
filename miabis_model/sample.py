@@ -258,7 +258,7 @@ class Sample:
         specimen.identifier = [create_fhir_identifier(self.identifier)]
         specimen.subject = FHIRReference()
         specimen.subject.reference = f"Patient/{subject_fhir_id}"
-        specimen.type = create_codeable_concept(FHIRConfig.get_value_set_url("sample", "detailed_sample_type"),
+        specimen.type = create_codeable_concept(FHIRConfig.get_code_system_url("sample", "detailed_sample_type"),
                                                 self.material_type)
         if self.sample_collection_id is not None:
             specimen.extension = [self.create_sample_collection_extension()]
@@ -274,7 +274,8 @@ class Sample:
             specimen.processing[0].extension = [
                 create_codeable_concept_extension(
                     FHIRConfig.get_extension_url("sample", "storage_temperature"),
-                    FHIRConfig.get_value_set_url("sample", "storage_temperature"), self.storage_temperature.value)]
+                    FHIRConfig.get_code_system_url("sample", "storage_temperature"),
+                    self.storage_temperature.value)]
         if self.use_restrictions is not None:
             specimen.note = [Annotation()]
             specimen.note[0].text = self.use_restrictions

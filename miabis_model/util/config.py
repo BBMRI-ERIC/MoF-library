@@ -12,6 +12,9 @@ class FHIRConfig:
         },
         "value_sets": {
             "dataset_type": "/ValueSet/miabis-dataset-type-vs"
+        },
+        "code_systems": {
+            "dataset_type": "/CodeSystem/miabis-dataset-type-CS"
         }
     }
 
@@ -178,5 +181,7 @@ class FHIRConfig:
             base_url = cls.BASE_URL
             code_system_path = resource_dict.get("code_systems", {}).get(code_system_name)
             if code_system_path is not None:
+                if code_system_path.startswith("http://") or code_system_path.startswith("https://"):
+                    return code_system_path
                 return f"{base_url}{code_system_path}"
         return None

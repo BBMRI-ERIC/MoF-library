@@ -745,3 +745,12 @@ class TestBlazeService(unittest.TestCase):
         self.blaze_service.upload_sample(self.example_samples[1])
         deleted_everything = self.blaze_service.delete_all_resources(self.example_biobank.identifier)
         self.assertTrue(deleted_everything)
+
+    def test_delete_all_resources_removes_juristic_person(self):
+        self.blaze_service.upload_biobank(self.example_biobank)
+        self.blaze_service.upload_donor(self.example_donor)
+        juristic_person_name = self.example_biobank.juristic_person.name
+        self.assertIsNotNone(self.blaze_service._get_juristic_person_organization_by_name(juristic_person_name))
+        deleted_everything = self.blaze_service.delete_all_resources(self.example_biobank.identifier)
+        self.assertTrue(deleted_everything)
+        self.assertIsNone(self.blaze_service._get_juristic_person_organization_by_name(juristic_person_name))
