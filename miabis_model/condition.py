@@ -113,8 +113,6 @@ class Condition:
             condition.code = self.__create_icd_10_code()
         condition.subject = FHIRReference()
         condition.subject.reference = f"Patient/{patient_fhir_id}"
-        condition.stage = [fhir_condition.ConditionStage()]
-        condition.stage[0].assessment = []
         return condition
 
     @staticmethod

@@ -135,7 +135,7 @@ class SampleDonor:
         if self.dataset_type is not None:
             extensions.append(
                 create_codeable_concept_extension(FHIRConfig.get_extension_url("donor", "dataset_type"),
-                                                  FHIRConfig.get_value_set_url("donor", "dataset_type"),
+                                                  FHIRConfig.get_code_system_url("donor", "dataset_type"),
                                                   self.dataset_type))
         if extensions:
             fhir_patient.extension = extensions
