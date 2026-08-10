@@ -33,6 +33,22 @@ class TestCanonicalUrls(unittest.TestCase):
             f"{IG_CANONICAL_ROOT}/StructureDefinition/miabis-organization-description-extension",
             FHIRConfig.get_extension_url("biobank", "description"))
 
+    def test_storage_temperature_code_system_matches_ig_canonical(self):
+        self.assertEqual(
+            f"{IG_CANONICAL_ROOT}/CodeSystem/miabis-storage-temperature-cs",
+            FHIRConfig.get_code_system_url("sample", "storage_temperature"))
+
+    def test_gender_code_system_is_absolute_and_not_prefixed(self):
+        # gender is an absolute HL7 URL and must not have BASE_URL prepended to it
+        self.assertEqual("http://hl7.org/fhir/administrative-gender",
+                         FHIRConfig.get_code_system_url("collection", "gender"))
+
+    def test_relative_code_system_paths_are_still_prefixed(self):
+        # counterpart to the test above: relative paths must still get BASE_URL
+        self.assertEqual(
+            f"{IG_CANONICAL_ROOT}/CodeSystem/miabis-collection-sample-type-cs",
+            FHIRConfig.get_code_system_url("collection", "material_type"))
+
     def test_no_profile_or_extension_url_contains_fhir_segment(self):
         for dict_name in [name for name in dir(FHIRConfig) if name.endswith("_URLS")]:
             resource_name = dict_name[: -len("_URLS")].lower()
