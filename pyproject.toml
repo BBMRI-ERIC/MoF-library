@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "MIABIS_on_FHIR"
-version = "1.3.0"
+version = "1.4.0"
 description = "Library containing classes for easier handling of data according to the MIABIS on FHIR profile, as well as client for communication with sample blaze server"
 readme = "README.md"
 authors = [{"name" = "Simon Konar", "email" = "simon.konar@gmail.com"}]
